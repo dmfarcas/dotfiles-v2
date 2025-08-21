@@ -1,0 +1,28 @@
+# Ignore sensitive or cache files
+configstore/
+gcloud/
+github-copilot/
+gh-copilot/
+fontforge/
+iterm2/AppSupport
+iterm2/sockets/
+
+# Ignore temporary files
+*.tmp
+*.log
+**/logs/
+**/cache/
+**/.DS_Store
+
+# Ignore credentials and tokens
+**/credentials*
+**/access_tokens*
+**/hosts.yml
+
+# Fish specific ignores
+fish/fish_variables
+fish/fishd.*
+
+# Nvim specific ignores (keep only config, not packages)
+nvim/lazy/
+nvim/.lazy/
