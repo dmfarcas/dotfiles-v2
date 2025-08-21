@@ -89,6 +89,10 @@ packages=(
     "gh"
     "bat"
     "fish"
+    "nmap"
+    "ripgrep"
+    "fd"
+    "nvm"
 )
 
 echo "📦 Installing essential packages..."
@@ -160,6 +164,24 @@ if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
         fisher install jethrokuan/fzf
     "
     print_status "Fish plugins installed"
+fi
+
+# Setup nvm and install latest Node.js
+if command -v nvm &> /dev/null; then
+    echo "🟢 Setting up nvm and installing latest Node.js..."
+    
+    # Source nvm for current session
+    export NVM_DIR="$(brew --prefix nvm)"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    
+    # Install and use latest LTS Node.js
+    nvm install --lts
+    nvm use --lts
+    nvm alias default node
+    
+    print_status "Node.js $(node --version) installed and set as default"
+else
+    print_warning "nvm not found in PATH, skipping Node.js setup"
 fi
 
 echo ""

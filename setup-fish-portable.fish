@@ -31,7 +31,7 @@ else
 end
 
 # Essential packages to install
-set packages jq git-delta zoxide eza fzf gh bat
+set packages jq git-delta zoxide eza fzf gh bat nmap ripgrep fd nvm
 
 echo "📦 Installing essential packages..."
 for package in $packages
@@ -58,6 +58,20 @@ echo "🔌 Installing fish plugins..."
 for plugin in $plugins
     echo "Installing $plugin..."
     fisher install $plugin
+end
+
+# Setup nvm and install latest Node.js
+if command_exists nvm
+    echo "🟢 Setting up nvm and installing latest Node.js..."
+    
+    # Install and use latest LTS Node.js
+    nvm install --lts
+    nvm use --lts
+    nvm alias default node
+    
+    echo "✅ Node.js (nvm current) installed and set as default"
+else
+    echo "⚠️ nvm not found in PATH, skipping Node.js setup"
 end
 
 echo "🎉 Portable fish setup complete!"
