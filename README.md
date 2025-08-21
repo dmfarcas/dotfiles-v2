@@ -16,25 +16,29 @@ cd ~/dotfiles
 ## 📦 What's Included
 
 ### Fish Shell (`fish/`)
+
 - **Portable configuration** that works on both Intel and Apple Silicon Macs
 - **Smart aliases** for common commands
 - **Essential plugins** via Fisher
 - **Custom key bindings** and functions
 
 ### Neovim (`nvim/`)
+
 - **Lazy.nvim** plugin management
 - **Custom Lua configuration**
 - **Language servers and tools**
 
 ### GitHub CLI (`gh/`)
+
 - **GitHub CLI configuration**
 - **Custom aliases and settings**
 
 ## 🛠 Tools Automatically Installed
 
 The setup script will install these essential tools via Homebrew:
+
 - `jq` - JSON processor
-- `git-delta` - Better git diffs  
+- `git-delta` - Better git diffs
 - `zoxide` - Smart directory jumping
 - `eza` - Modern ls replacement
 - `fzf` - Fuzzy finder
@@ -44,15 +48,18 @@ The setup script will install these essential tools via Homebrew:
 ## 🐟 Fish Shell Features
 
 ### Aliases
+
 - `zox` → `zoxide`
 - `ls` → `eza --icons`
 - `cat` → `bat --style=plain`
 
 ### Key Bindings
+
 - `Ctrl+R` - FZF history search
 - Vi mode enabled
 
 ### Functions
+
 - `code` - Open current directory in VS Code
 
 ## 📁 Directory Structure
