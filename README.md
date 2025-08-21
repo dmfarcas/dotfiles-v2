@@ -44,6 +44,10 @@ The setup script will install these essential tools via Homebrew:
 - `fzf` - Fuzzy finder
 - `gh` - GitHub CLI
 - `bat` - Better cat with syntax highlighting
+- `nmap` - Network discovery and security auditing
+- `ripgrep` - Ultra-fast text search tool
+- `fd` - Simple, fast alternative to find
+- `nvm` - Node.js Version Manager (with latest LTS)
 
 ## 🐟 Fish Shell Features
 
