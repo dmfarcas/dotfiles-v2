@@ -17,6 +17,10 @@ if ! gh auth status &> /dev/null; then
     gh auth login
 fi
 
+# Install GitHub Copilot extension
+echo "🤖 Installing GitHub Copilot CLI extension..."
+gh extension install github/gh-copilot
+
 # Get repository name
 read -p "📝 Enter repository name (default: dotfiles): " repo_name
 repo_name=${repo_name:-dotfiles}
@@ -47,6 +51,10 @@ git push -u origin main
 echo ""
 echo "🎉 Success! Your dotfiles are now on GitHub!"
 echo "📂 Repository: https://github.com/$(gh api user --jq .login)/$repo_name"
+echo ""
+echo "🤖 GitHub Copilot CLI is now installed! Try:"
+echo "   gh copilot suggest 'install node.js'"
+echo "   gh copilot explain 'rm -rf'"
 echo ""
 echo "To clone on a new machine:"
 echo "git clone https://github.com/$(gh api user --jq .login)/$repo_name.git ~/dotfiles"
