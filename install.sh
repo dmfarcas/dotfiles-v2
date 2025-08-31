@@ -153,6 +153,24 @@ if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
     # Check if plugins are already present in the dotfiles
     if [ -f "$CONFIG_DIR/fish/fish_plugins" ] && [ -f "$CONFIG_DIR/fish/functions/fisher.fish" ]; then
         print_status "Fish plugins already present in dotfiles, skipping Fisher installation"
+        
+        # Configure Tide if it's available but not configured
+        if command -v tide &>/dev/null; then
+            echo "🌊 Configuring Tide prompt..."
+            fish -c "
+                # Check if tide is already configured
+                if not set -q tide_prompt_style
+                    # Auto-configure tide with lean style
+                    echo 'Setting up Tide with Lean style...'
+                    set -U tide_prompt_style lean
+                    set -U tide_prompt_colors 'True color'
+                    set -U tide_prompt_transient false
+                    set -U tide_prompt_instant_prompt true
+                    tide reload
+                end
+            "
+            print_status "Tide prompt configured"
+        fi
     else
         # Switch to fish and setup fisher + plugins
         fish -c "
