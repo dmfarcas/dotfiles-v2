@@ -178,6 +178,20 @@ else
     print_status "Homerow already installed"
 fi
 
+# Install Ghostty if not present
+if [ "$HOMEBREW_FAILED" = true ]; then
+    print_warning "Skipping Ghostty installation due to Homebrew failure"
+elif ! brew list --cask ghostty &>/dev/null; then
+    echo "👻 Installing Ghostty terminal..."
+    if brew install --cask ghostty; then
+        print_status "Ghostty installed"
+    else
+        print_error "Failed to install Ghostty - continuing with script"
+    fi
+else
+    print_status "Ghostty already installed"
+fi
+
 # Create config directory if it doesn't exist
 mkdir -p "$CONFIG_DIR"
 
