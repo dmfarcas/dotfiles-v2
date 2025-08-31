@@ -3,8 +3,6 @@
 # Dotfiles Installation Script
 # Automatically sets up development environment on macOS
 
-set -e  # Exit on any error
-
 echo "🚀 Setting up dotfiles..."
 
 # Colors for output
@@ -31,6 +29,20 @@ print_warning() {
 
 print_error() {
     echo -e "${RED}❌ $1${NC}"
+}
+
+# Function to run command with error handling
+run_with_error_handling() {
+    local description="$1"
+    shift
+    
+    if "$@"; then
+        print_status "$description"
+        return 0
+    else
+        print_error "Failed: $description - skipping and continuing..."
+        return 1
+    fi
 }
 
 # Function to backup existing config
@@ -71,10 +83,14 @@ fi
 # Install Homebrew if not present
 if ! command -v brew &> /dev/null; then
     echo "🍺 Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
-    # Add to PATH for current session
-    export PATH="$(dirname "$BREW_PATH"):$PATH"
+    if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+        # Add to PATH for current session
+        export PATH="$(dirname "$BREW_PATH"):$PATH"
+        print_status "Homebrew installed successfully"
+    else
+        print_error "Failed to install Homebrew - skipping package installations"
+        HOMEBREW_FAILED=true
+    fi
 else
     print_status "Homebrew already installed"
 fi
@@ -96,14 +112,71 @@ packages=(
 )
 
 echo "📦 Installing essential packages..."
-for package in "${packages[@]}"; do
-    if brew list "$package" &>/dev/null; then
-        print_status "$package already installed"
+if [ "$HOMEBREW_FAILED" = true ]; then
+    print_warning "Skipping package installation due to Homebrew failure"
+else
+    for package in "${packages[@]}"; do
+        if brew list "$package" &>/dev/null; then
+            print_status "$package already installed"
+        else
+            echo "Installing $package..."
+            if ! brew install "$package"; then
+                print_error "Failed to install $package - continuing with next package"
+            else
+                print_status "$package installed successfully"
+            fi
+        fi
+    done
+fi
+
+# Install VS Code if not present
+if [ "$HOMEBREW_FAILED" = true ]; then
+    print_warning "Skipping VS Code installation due to Homebrew failure"
+elif ! brew list --cask visual-studio-code &>/dev/null; then
+    echo "💻 Installing Visual Studio Code..."
+    if brew install --cask visual-studio-code; then
+        print_status "VS Code installed"
     else
-        echo "Installing $package..."
-        brew install "$package"
+        print_error "Failed to install VS Code - skipping VS Code setup"
+        VSCODE_FAILED=true
     fi
-done
+else
+    print_status "VS Code already installed"
+fi
+
+# Ensure VS Code command line tool is available
+if [ "$VSCODE_FAILED" != true ] && ! command -v code &> /dev/null; then
+    echo "🔧 Setting up VS Code command line tool..."
+    
+    # Check if VS Code app exists
+    if [ -d "/Applications/Visual Studio Code.app" ]; then
+        # Add symlink to make 'code' command available
+        if sudo ln -sf "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" /usr/local/bin/code; then
+            print_status "VS Code command line tool configured"
+        else
+            print_error "Failed to set up VS Code command line tool - you may need to do this manually"
+        fi
+    else
+        print_warning "VS Code app not found in /Applications - you may need to manually install the command line tools"
+        echo "You can do this by opening VS Code and running 'Shell Command: Install code command in PATH' from the command palette"
+    fi
+elif [ "$VSCODE_FAILED" != true ]; then
+    print_status "VS Code command line tool already available"
+fi
+
+# Install Homerow if not present
+if [ "$HOMEBREW_FAILED" = true ]; then
+    print_warning "Skipping Homerow installation due to Homebrew failure"
+elif ! brew list --cask homerow &>/dev/null; then
+    echo "⌨️  Installing Homerow..."
+    if brew install --cask homerow; then
+        print_status "Homerow installed"
+    else
+        print_error "Failed to install Homerow - continuing with script"
+    fi
+else
+    print_status "Homerow already installed"
+fi
 
 # Create config directory if it doesn't exist
 mkdir -p "$CONFIG_DIR"
@@ -128,20 +201,32 @@ fi
 
 # Set fish as default shell if not already
 current_shell=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
-fish_path=$(which fish)
+fish_path=$(which fish 2>/dev/null)
 
-if [ "$current_shell" != "$fish_path" ]; then
+if [ -z "$fish_path" ]; then
+    print_error "Fish shell not found - skipping shell change"
+elif [ "$current_shell" != "$fish_path" ]; then
     echo "🐟 Setting fish as default shell..."
     
     # Add fish to /etc/shells if not already there
     if ! grep -q "$fish_path" /etc/shells; then
         echo "Adding fish to /etc/shells (requires sudo)..."
-        echo "$fish_path" | sudo tee -a /etc/shells
+        if echo "$fish_path" | sudo tee -a /etc/shells; then
+            print_status "Fish added to /etc/shells"
+        else
+            print_error "Failed to add fish to /etc/shells - skipping shell change"
+            SHELL_CHANGE_FAILED=true
+        fi
     fi
     
     # Change default shell
-    chsh -s "$fish_path"
-    print_status "Fish set as default shell"
+    if [ "$SHELL_CHANGE_FAILED" != true ]; then
+        if chsh -s "$fish_path"; then
+            print_status "Fish set as default shell"
+        else
+            print_error "Failed to change default shell - you may need to do this manually"
+        fi
+    fi
 else
     print_status "Fish already set as default shell"
 fi
@@ -157,7 +242,7 @@ if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
         # Configure Tide if it's available but not configured
         if command -v tide &>/dev/null; then
             echo "🌊 Configuring Tide prompt..."
-            fish -c "
+            if fish -c "
                 # Check if tide is already configured
                 if not set -q tide_prompt_style
                     # Auto-configure tide with lean style
@@ -168,12 +253,15 @@ if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
                     set -U tide_prompt_instant_prompt true
                     tide reload
                 end
-            "
-            print_status "Tide prompt configured"
+            "; then
+                print_status "Tide prompt configured"
+            else
+                print_error "Failed to configure Tide - you may need to run 'tide configure' manually"
+            fi
         fi
     else
         # Switch to fish and setup fisher + plugins
-        fish -c "
+        if fish -c "
             # Install Fisher if not present
             if not command -v fisher &>/dev/null
                 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
@@ -185,9 +273,14 @@ if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
                 echo 'Installing plugins from fish_plugins file...'
                 fisher update
             end
-        "
-        print_status "Fish plugins setup complete"
+        "; then
+            print_status "Fish plugins setup complete"
+        else
+            print_error "Failed to setup fish plugins - you may need to install them manually"
+        fi
     fi
+else
+    print_warning "Fish config not found - skipping fish plugins setup"
 fi
 
 # Setup nvm and install latest Node.js
@@ -196,14 +289,18 @@ if command -v nvm &> /dev/null; then
     
     # Source nvm for current session
     export NVM_DIR="$(brew --prefix nvm)"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-    
-    # Install and use latest LTS Node.js
-    nvm install --lts
-    nvm use --lts
-    nvm alias default node
-    
-    print_status "Node.js $(node --version) installed and set as default"
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+        . "$NVM_DIR/nvm.sh"
+        
+        # Install and use latest LTS Node.js
+        if nvm install --lts && nvm use --lts && nvm alias default node; then
+            print_status "Node.js $(node --version) installed and set as default"
+        else
+            print_error "Failed to install Node.js via nvm - you may need to do this manually"
+        fi
+    else
+        print_error "nvm script not found - installation may have failed"
+    fi
 else
     print_warning "nvm not found in PATH, skipping Node.js setup"
 fi
