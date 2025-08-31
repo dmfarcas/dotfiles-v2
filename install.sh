@@ -150,20 +150,26 @@ fi
 if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
     echo "🎣 Setting up fish plugins..."
     
-    # Switch to fish and install fisher + plugins
-    fish -c "
-        # Install Fisher if not present
-        if not command -v fisher &>/dev/null
-            curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
-            fisher install jorgebucaran/fisher
-        end
-        
-        # Install essential plugins
-        fisher install jorgebucaran/autopair.fish
-        fisher install PatrickF1/fzf.fish
-        fisher install jethrokuan/fzf
-    "
-    print_status "Fish plugins installed"
+    # Check if plugins are already present in the dotfiles
+    if [ -f "$CONFIG_DIR/fish/fish_plugins" ] && [ -f "$CONFIG_DIR/fish/functions/fisher.fish" ]; then
+        print_status "Fish plugins already present in dotfiles, skipping Fisher installation"
+    else
+        # Switch to fish and setup fisher + plugins
+        fish -c "
+            # Install Fisher if not present
+            if not command -v fisher &>/dev/null
+                curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
+                fisher install jorgebucaran/fisher
+            end
+            
+            # Install plugins from fish_plugins file
+            if test -f ~/.config/fish/fish_plugins
+                echo 'Installing plugins from fish_plugins file...'
+                fisher update
+            end
+        "
+        print_status "Fish plugins setup complete"
+    fi
 fi
 
 # Setup nvm and install latest Node.js
