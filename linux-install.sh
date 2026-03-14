@@ -175,6 +175,15 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
     fi
 fi
 
+# ===== Oh My Zsh =====
+print_section "Installing Oh My Zsh"
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    print_status "Oh My Zsh already installed"
+else
+    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    print_status "Oh My Zsh installed"
+fi
+
 # ===== Symlinks =====
 print_section "Creating symlinks"
 
