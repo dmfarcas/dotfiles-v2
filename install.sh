@@ -98,7 +98,7 @@ fi
 # Essential packages
 packages=(
     "jq"
-    "git-delta" 
+    "git-delta"
     "zoxide"
     "eza"
     "fzf"
@@ -109,6 +109,8 @@ packages=(
     "ripgrep"
     "fd"
     "nvm"
+    "tmux"
+    "neovim"
 )
 
 echo "📦 Installing essential packages..."

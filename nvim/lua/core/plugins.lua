@@ -52,7 +52,10 @@ require('lazy').setup({
   -- Syntax highlighting
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate'
+    build = ':TSUpdate',
+    config = function()
+      require('plugins.configs.treesitter')
+    end
   },
 
   -- File finder

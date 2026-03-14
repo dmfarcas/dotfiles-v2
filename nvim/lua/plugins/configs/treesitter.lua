@@ -1,4 +1,4 @@
-require('nvim-treesitter.configs').setup({
+require('nvim-treesitter').setup({
   ensure_installed = { 'typescript', 'javascript', 'tsx', 'html', 'css', 'json' },
   sync_install = false,
   auto_install = true,
