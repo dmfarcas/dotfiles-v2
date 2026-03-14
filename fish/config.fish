@@ -20,6 +20,7 @@ end
 # Brew install aliases
 alias zox="zoxide"
 alias ls="eza --icons"
+alias ll="eza -la --icons"
 alias cat="bat --style=plain"
 
 bind \cr fzf_history
