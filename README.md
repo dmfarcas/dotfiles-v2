@@ -118,3 +118,12 @@ Feel free to fork and customize for your own use! If you have improvements or su
 ## 📝 License
 
 MIT License - feel free to use however you'd like!
+
+## Planned improvements (headless AWS)
+
+- [ ] tmux auto-attach on SSH login + tmux.conf (vi keys, mouse, status bar)
+- [ ] mosh install for flaky connection tolerance
+- [ ] `~/.ssh/config` keep-alive (ServerAliveInterval) + host alias
+- [ ] starship prompt replacing hand-rolled vcs prompt
+- [ ] Project-specific shell aliases (cargo shortcuts, session nav)
+- [ ] Global `~/.gitconfig` wired into linux-install.sh
