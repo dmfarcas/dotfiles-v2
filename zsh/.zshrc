@@ -49,7 +49,5 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# ===== Tmux quick reference (shown in new shells inside tmux) =====
-if [ -n "$TMUX" ]; then
-    echo "tmux  prefix=C-a │ C-a | split-h  C-a - split-v  C-a c new-win  C-a n/p next/prev │ right-click menu │ mouse: click/scroll"
-fi
+# ===== Tmux quick reference =====
+echo "tmux  prefix=C-a │ | split-h  - split-v  c new-win  n/p next/prev  x kill │ right-click menu │ mouse on"
