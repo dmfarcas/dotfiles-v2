@@ -213,6 +213,7 @@ create_symlink "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 # Tmux config
 if [ -f "$DOTFILES_DIR/tmux/tmux.conf" ]; then
     create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+    create_symlink "$DOTFILES_DIR/tmux" "$CONFIG_DIR/tmux"
 fi
 
 # Neovim config
