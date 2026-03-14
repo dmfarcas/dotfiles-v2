@@ -57,7 +57,6 @@ apt_packages=(
     git
     unzip
     tmux
-    mosh
     gcc
     build-essential
 )
