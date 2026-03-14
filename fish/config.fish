@@ -29,3 +29,8 @@ bind \cr fzf_history
 if command -v starship &>/dev/null
     starship init fish | source
 end
+
+# ===== Tmux quick reference (shown in new shells inside tmux) =====
+if set -q TMUX
+    echo "tmux  prefix=C-a │ C-a | split-h  C-a - split-v  C-a c new-win  C-a n/p next/prev │ right-click menu │ mouse: click/scroll"
+end

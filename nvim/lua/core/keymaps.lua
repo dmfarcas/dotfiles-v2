@@ -3,6 +3,9 @@ local keymap = vim.keymap.set
 -- Leader key
 vim.g.mapleader = ' '
 
+-- Phone-friendly: jj exits insert mode (avoids needing Escape key)
+keymap('i', 'jj', '<Esc>', { desc = 'Exit insert mode' })
+
 -- Navigation
 keymap('n', '<leader>e', vim.cmd.Ex, { desc = 'File explorer' })
 

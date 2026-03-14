@@ -10,3 +10,4 @@ vim.opt.smartcase = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = 'yes'
 vim.opt.clipboard = 'unnamedplus'
+vim.opt.mouse = 'a'           -- full mouse support (click, scroll, resize)

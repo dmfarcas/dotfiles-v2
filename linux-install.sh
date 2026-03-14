@@ -143,6 +143,16 @@ if [ "${INSTALL_NVIM:-false}" = true ]; then
     print_status "nvim $(nvim --version | head -1) installed"
 fi
 
+# ===== Micro editor =====
+print_section "Installing micro"
+if command -v micro &>/dev/null; then
+    print_status "micro already installed"
+else
+    curl -sL https://getmic.ro | bash
+    sudo mv micro /usr/local/bin/micro
+    print_status "micro installed"
+fi
+
 # ===== GitHub CLI =====
 print_section "Installing GitHub CLI"
 if command -v gh &>/dev/null; then
