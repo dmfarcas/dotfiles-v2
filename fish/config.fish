@@ -24,3 +24,8 @@ alias ll="eza -la --icons"
 alias cat="bat --style=plain"
 
 bind \cr fzf_history
+
+# ===== Starship prompt =====
+if command -v starship &>/dev/null
+    starship init fish | source
+end

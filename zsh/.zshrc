@@ -1,6 +1,11 @@
+# ===== Tmux auto-attach =====
+if command -v tmux &>/dev/null && [ -z "$TMUX" ] && [ -n "$SSH_CONNECTION" ]; then
+    tmux attach 2>/dev/null || tmux new-session -s main
+fi
+
 # ===== Oh My Zsh =====
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""  # using starship
 plugins=(git vi-mode zoxide)
 source $ZSH/oh-my-zsh.sh
 
@@ -38,3 +43,8 @@ export NVM_DIR="$HOME/.nvm"
 # ===== Zsh plugins (installed via apt) =====
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null || true
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null || true
+
+# ===== Starship prompt =====
+if command -v starship &>/dev/null; then
+    eval "$(starship init zsh)"
+fi

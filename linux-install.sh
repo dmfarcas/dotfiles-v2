@@ -57,6 +57,7 @@ apt_packages=(
     git
     unzip
     tmux
+    mosh
     gcc
     build-essential
 )
@@ -175,6 +176,15 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
     fi
 fi
 
+# ===== Starship =====
+print_section "Installing Starship prompt"
+if command -v starship &>/dev/null; then
+    print_status "Starship already installed"
+else
+    curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir ~/.local/bin
+    print_status "Starship installed"
+fi
+
 # ===== Oh My Zsh =====
 print_section "Installing Oh My Zsh"
 if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -189,6 +199,11 @@ print_section "Creating symlinks"
 
 # Zsh config
 create_symlink "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
+
+# Tmux config
+if [ -f "$DOTFILES_DIR/tmux/tmux.conf" ]; then
+    create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+fi
 
 # Neovim config
 if [ -d "$DOTFILES_DIR/nvim" ]; then
