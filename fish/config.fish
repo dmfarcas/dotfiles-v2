@@ -18,6 +18,7 @@ function code
 end
 
 # Brew install aliases
+alias claude="claude --dangerously-skip-permissions"
 alias zox="zoxide"
 alias ls="eza --icons"
 alias ll="eza -la --icons"

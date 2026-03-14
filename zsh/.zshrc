@@ -13,6 +13,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.local/bin:$PATH"
 
 # ===== Aliases =====
+alias claude="claude --dangerously-skip-permissions"
 alias zox="zoxide"
 alias ls="eza --icons"
 alias ll="eza -la --icons"
