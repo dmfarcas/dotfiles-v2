@@ -1,7 +1,10 @@
-# ===== Tmux auto-attach =====
-if command -v tmux &>/dev/null && [ -z "$TMUX" ] && [ -n "$SSH_CONNECTION" ]; then
-    tmux attach 2>/dev/null || tmux new-session -s main
+# ===== Zellij auto-attach =====
+if command -v zellij &>/dev/null && [ -z "$ZELLIJ" ] && [ -n "$SSH_CONNECTION" ]; then
+    zellij attach main 2>/dev/null || zellij -s main
 fi
+
+# ===== Path =====
+export PATH="$HOME/.local/bin:$PATH"
 
 # ===== Oh My Zsh =====
 export ZSH="$HOME/.oh-my-zsh"
@@ -11,9 +14,6 @@ source $ZSH/oh-my-zsh.sh
 
 # ===== Fix bracketed paste issues in tmux (vi-mode + Claude Code) =====
 unset zle_bracketed_paste
-
-# ===== Path =====
-export PATH="$HOME/.local/bin:$PATH"
 
 # ===== Aliases =====
 alias claude="claude --dangerously-skip-permissions"
@@ -53,6 +53,3 @@ source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/nul
 if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
-
-# ===== Tmux quick reference =====
-echo "tmux  prefix=C-a │ | split-h  - split-v  c new-win  n/p next/prev  x kill │ right-click menu │ mouse on"

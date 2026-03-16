@@ -157,6 +157,16 @@ else
     fi
 fi
 
+# ===== Zellij (terminal multiplexer) =====
+print_section "Installing zellij"
+if command -v zellij &>/dev/null; then
+    print_status "zellij already installed"
+else
+    curl -sL https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C /tmp
+    sudo mv /tmp/zellij /usr/local/bin/zellij
+    print_status "zellij installed"
+fi
+
 # ===== Micro editor =====
 print_section "Installing micro"
 if command -v micro &>/dev/null; then
@@ -238,6 +248,11 @@ fi
 # GitHub CLI config
 if [ -d "$DOTFILES_DIR/gh" ]; then
     create_symlink "$DOTFILES_DIR/gh" "$CONFIG_DIR/gh"
+fi
+
+# Zellij config
+if [ -d "$DOTFILES_DIR/zellij" ]; then
+    create_symlink "$DOTFILES_DIR/zellij" "$CONFIG_DIR/zellij"
 fi
 
 # ===== Set zsh as default shell =====

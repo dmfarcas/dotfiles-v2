@@ -112,6 +112,7 @@ packages=(
     "tmux"
     "neovim"
     "glow"
+    "zellij"
 )
 
 echo "📦 Installing essential packages..."
@@ -214,6 +215,11 @@ fi
 # GitHub CLI configuration
 if [ -d "$DOTFILES_DIR/gh" ]; then
     create_symlink "$DOTFILES_DIR/gh" "$CONFIG_DIR/gh"
+fi
+
+# Zellij configuration
+if [ -d "$DOTFILES_DIR/zellij" ]; then
+    create_symlink "$DOTFILES_DIR/zellij" "$CONFIG_DIR/zellij"
 fi
 
 # Set fish as default shell if not already

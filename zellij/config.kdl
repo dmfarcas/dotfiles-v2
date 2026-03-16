@@ -1,0 +1,33 @@
+// Zellij config — mostly defaults, just visual tweaks
+
+// Use default keybindings (Ctrl+key modes shown in status bar)
+// No keybind overrides — the status bar teaches you as you go
+
+// ── Behaviour ────────────────────────────────────────
+
+mouse_mode true
+copy_on_select true
+scroll_buffer_size 50000
+session_serialization true
+serialize_pane_viewport true
+scrollback_lines_to_serialize 5000
+
+// ── Theme: Catppuccin Mocha ──────────────────────────
+
+themes {
+    catppuccin-mocha {
+        bg "#1e1e2e"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        yellow "#f9e2af"
+        blue "#89b4fa"
+        magenta "#cba6f7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
+    }
+}
+
+theme "catppuccin-mocha"
