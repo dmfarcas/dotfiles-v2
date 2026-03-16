@@ -142,6 +142,21 @@ if [ "${INSTALL_NVIM:-false}" = true ]; then
     print_status "nvim $(nvim --version | head -1) installed"
 fi
 
+# ===== Glow (terminal markdown renderer) =====
+print_section "Installing glow"
+if command -v glow &>/dev/null; then
+    print_status "glow already installed"
+else
+    GLOW_VERSION=$(curl -s https://api.github.com/repos/charmbracelet/glow/releases/latest | jq -r '.tag_name' | sed 's/^v//')
+    if [ -n "$GLOW_VERSION" ] && [ "$GLOW_VERSION" != "null" ]; then
+        curl -sLo /tmp/glow.deb "https://github.com/charmbracelet/glow/releases/download/v${GLOW_VERSION}/glow_${GLOW_VERSION}_amd64.deb"
+        sudo dpkg -i /tmp/glow.deb &>/dev/null && print_status "glow installed" || print_error "Failed to install glow"
+        rm -f /tmp/glow.deb
+    else
+        print_error "Could not determine glow version"
+    fi
+fi
+
 # ===== Micro editor =====
 print_section "Installing micro"
 if command -v micro &>/dev/null; then

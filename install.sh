@@ -111,6 +111,7 @@ packages=(
     "nvm"
     "tmux"
     "neovim"
+    "glow"
 )
 
 echo "📦 Installing essential packages..."

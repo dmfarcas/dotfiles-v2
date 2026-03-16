@@ -23,6 +23,7 @@ alias zox="zoxide"
 alias ls="eza --icons"
 alias ll="eza -la --icons"
 alias cat="bat --style=plain"
+alias md="glow"
 
 bind \cr fzf_history
 

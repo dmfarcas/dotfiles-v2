@@ -9,6 +9,9 @@ ZSH_THEME=""  # using starship
 plugins=(git vi-mode zoxide)
 source $ZSH/oh-my-zsh.sh
 
+# ===== Fix bracketed paste issues in tmux (vi-mode + Claude Code) =====
+unset zle_bracketed_paste
+
 # ===== Path =====
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -18,6 +21,7 @@ alias zox="zoxide"
 alias ls="eza --icons"
 alias ll="eza -la --icons"
 alias cat="bat --style=plain"
+alias md="glow"
 
 # bat is installed as batcat on Ubuntu - create alias if needed
 if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
