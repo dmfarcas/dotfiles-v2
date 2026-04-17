@@ -196,6 +196,72 @@ else
     print_status "Ghostty already installed"
 fi
 
+# Additional GUI applications (casks)
+echo "📱 Installing additional applications..."
+
+gui_apps=(
+    # Browsers
+    "brave-browser"
+    "firefox"
+    "google-chrome"
+    
+    # Development
+    "iterm2"
+    "android-studio"
+    "mongodb-compass"
+    
+    # Design/Media
+    "figma"
+    "vlc"
+    
+    # Communication
+    "slack"
+    
+    # Productivity
+    "obsidian"
+    
+    # Utilities
+    "virtualbox"
+)
+
+# Additional CLI tools not in main packages list
+additional_cli=(
+    "android-platform-tools"  # adb, fastboot
+    "mitmproxy"              # HTTP/HTTPS proxy
+    "ngrok"                  # Secure tunnels
+)
+
+if [ "$HOMEBREW_FAILED" = true ]; then
+    print_warning "Skipping GUI apps installation due to Homebrew failure"
+else
+    for app in "${gui_apps[@]}"; do
+        if brew list --cask "$app" &>/dev/null; then
+            print_status "$app already installed"
+        else
+            echo "Installing $app..."
+            if ! brew install --cask "$app"; then
+                print_error "Failed to install $app - continuing with next app"
+            else
+                print_status "$app installed successfully"
+            fi
+        fi
+    done
+    
+    # Install additional CLI tools
+    for tool in "${additional_cli[@]}"; do
+        if brew list "$tool" &>/dev/null; then
+            print_status "$tool already installed"
+        else
+            echo "Installing $tool..."
+            if ! brew install "$tool"; then
+                print_error "Failed to install $tool - continuing with next tool"
+            else
+                print_status "$tool installed successfully"
+            fi
+        fi
+    done
+fi
+
 # Create config directory if it doesn't exist
 mkdir -p "$CONFIG_DIR"
 
