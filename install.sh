@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Dotfiles Installation Script
-# Automatically sets up development environment on macOS
+# Automatically sets up development environment on macOS with zsh
 
 echo "🚀 Setting up dotfiles..."
 
@@ -104,7 +104,6 @@ packages=(
     "fzf"
     "gh"
     "bat"
-    "fish"
     "nmap"
     "ripgrep"
     "fd"
@@ -113,6 +112,7 @@ packages=(
     "neovim"
     "glow"
     "zellij"
+    "starship"
 )
 
 echo "📦 Installing essential packages..."
@@ -202,9 +202,15 @@ mkdir -p "$CONFIG_DIR"
 # Create symlinks for configurations
 echo "🔗 Creating symlinks..."
 
-# Fish configuration
-if [ -d "$DOTFILES_DIR/fish" ]; then
-    create_symlink "$DOTFILES_DIR/fish" "$CONFIG_DIR/fish"
+# Zsh configuration
+if [ -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
+    create_symlink "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
+fi
+
+# Tmux configuration
+if [ -f "$DOTFILES_DIR/tmux/tmux.conf" ]; then
+    create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+    create_symlink "$DOTFILES_DIR/tmux" "$CONFIG_DIR/tmux"
 fi
 
 # Neovim configuration  
@@ -222,88 +228,46 @@ if [ -d "$DOTFILES_DIR/zellij" ]; then
     create_symlink "$DOTFILES_DIR/zellij" "$CONFIG_DIR/zellij"
 fi
 
-# Set fish as default shell if not already
-current_shell=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
-fish_path=$(which fish 2>/dev/null)
+# Install Oh My Zsh if not present
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "🎨 Installing Oh My Zsh..."
+    if RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
+        print_status "Oh My Zsh installed"
+    else
+        print_error "Failed to install Oh My Zsh - continuing with script"
+    fi
+else
+    print_status "Oh My Zsh already installed"
+fi
 
-if [ -z "$fish_path" ]; then
-    print_error "Fish shell not found - skipping shell change"
-elif [ "$current_shell" != "$fish_path" ]; then
-    echo "🐟 Setting fish as default shell..."
+# Set zsh as default shell if not already
+current_shell=$(dscl . -read ~/ UserShell | sed 's/UserShell: //')
+zsh_path="/bin/zsh"
+
+if [ "$current_shell" != "$zsh_path" ]; then
+    echo "⚡ Setting zsh as default shell..."
     
-    # Add fish to /etc/shells if not already there
-    if ! grep -q "$fish_path" /etc/shells; then
-        echo "Adding fish to /etc/shells (requires sudo)..."
-        if echo "$fish_path" | sudo tee -a /etc/shells; then
-            print_status "Fish added to /etc/shells"
+    # Add zsh to /etc/shells if not already there
+    if ! grep -q "$zsh_path" /etc/shells; then
+        echo "Adding zsh to /etc/shells (requires sudo)..."
+        if echo "$zsh_path" | sudo tee -a /etc/shells; then
+            print_status "zsh added to /etc/shells"
         else
-            print_error "Failed to add fish to /etc/shells - skipping shell change"
+            print_error "Failed to add zsh to /etc/shells - skipping shell change"
             SHELL_CHANGE_FAILED=true
         fi
     fi
     
     # Change default shell
     if [ "$SHELL_CHANGE_FAILED" != true ]; then
-        if chsh -s "$fish_path"; then
-            print_status "Fish set as default shell"
+        if chsh -s "$zsh_path"; then
+            print_status "zsh set as default shell"
         else
             print_error "Failed to change default shell - you may need to do this manually"
         fi
     fi
 else
-    print_status "Fish already set as default shell"
-fi
-
-# Install Fisher and fish plugins (if fish config exists)
-if [ -f "$CONFIG_DIR/fish/config.fish" ]; then
-    echo "🎣 Setting up fish plugins..."
-    
-    # Check if plugins are already present in the dotfiles
-    if [ -f "$CONFIG_DIR/fish/fish_plugins" ] && [ -f "$CONFIG_DIR/fish/functions/fisher.fish" ]; then
-        print_status "Fish plugins already present in dotfiles, skipping Fisher installation"
-        
-        # Configure Tide if it's available but not configured
-        if command -v tide &>/dev/null; then
-            echo "🌊 Configuring Tide prompt..."
-            if fish -c "
-                # Check if tide is already configured
-                if not set -q tide_prompt_style
-                    # Auto-configure tide with lean style
-                    echo 'Setting up Tide with Lean style...'
-                    set -U tide_prompt_style lean
-                    set -U tide_prompt_colors 'True color'
-                    set -U tide_prompt_transient false
-                    set -U tide_prompt_instant_prompt true
-                    tide reload
-                end
-            "; then
-                print_status "Tide prompt configured"
-            else
-                print_error "Failed to configure Tide - you may need to run 'tide configure' manually"
-            fi
-        fi
-    else
-        # Switch to fish and setup fisher + plugins
-        if fish -c "
-            # Install Fisher if not present
-            if not command -v fisher &>/dev/null
-                curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
-                fisher install jorgebucaran/fisher
-            end
-            
-            # Install plugins from fish_plugins file
-            if test -f ~/.config/fish/fish_plugins
-                echo 'Installing plugins from fish_plugins file...'
-                fisher update
-            end
-        "; then
-            print_status "Fish plugins setup complete"
-        else
-            print_error "Failed to setup fish plugins - you may need to install them manually"
-        fi
-    fi
-else
-    print_warning "Fish config not found - skipping fish plugins setup"
+    print_status "zsh already set as default shell"
 fi
 
 # Setup nvm and install latest Node.js
@@ -332,8 +296,7 @@ echo ""
 echo -e "${GREEN}🎉 Dotfiles installation complete!${NC}"
 echo ""
 echo "Next steps:"
-echo "1. Restart your terminal or run: source ~/.config/fish/config.fish"
-echo "2. Run 'fish' to start using your new shell"
-echo "3. Customize configurations in $CONFIG_DIR"
+echo "1. Restart your terminal or run: exec zsh"
+echo "2. Customize configurations in $CONFIG_DIR"
 echo ""
 echo "Enjoy your new development environment! 🚀"

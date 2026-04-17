@@ -1,32 +1,45 @@
 # 🔧 Dotfiles
 
-My personal configuration files for macOS development environment.
+My personal configuration files for macOS and Linux development environments.
 
 ## 🚀 Quick Setup
 
+**macOS:**
 ```bash
-# Clone the repository
 git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
-
-# Run the install script
 cd ~/dotfiles
 ./install.sh
 ```
 
+**Linux/Ubuntu:**
+```bash
+git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./linux-install.sh
+```
+
 ## 📦 What's Included
 
-### Fish Shell (`fish/`)
+### Zsh Shell (`zsh/`)
 
-- **Portable configuration** that works on both Intel and Apple Silicon Macs
+- **Unified configuration** that works on macOS and Linux
+- **Oh My Zsh** framework
+- **Starship prompt** for a modern, fast prompt
 - **Smart aliases** for common commands
-- **Essential plugins** via Fisher
-- **Custom key bindings** and functions
+- **Platform-specific optimizations**
 
 ### Neovim (`nvim/`)
 
 - **Lazy.nvim** plugin management
 - **Custom Lua configuration**
 - **Language servers and tools**
+
+### Tmux (`tmux/`)
+
+- **Vim-style key bindings**
+- **Mouse support**
+- **Custom status bar**
+- **Auto-attach on SSH sessions**
 
 ### GitHub CLI (`gh/`)
 
@@ -35,51 +48,59 @@ cd ~/dotfiles
 
 ## 🛠 Tools Automatically Installed
 
-The setup script will install these essential tools via Homebrew:
+The setup scripts will install these essential tools:
 
-- `jq` - JSON processor
-- `git-delta` - Better git diffs
-- `zoxide` - Smart directory jumping
-- `eza` - Modern ls replacement
-- `fzf` - Fuzzy finder
-- `gh` - GitHub CLI
-- `bat` - Better cat with syntax highlighting
-- `nmap` - Network discovery and security auditing
-- `ripgrep` - Ultra-fast text search tool
-- `fd` - Simple, fast alternative to find
-- `nvm` - Node.js Version Manager (with latest LTS)
+**macOS (via Homebrew):**
+- `jq`, `git-delta`, `zoxide`, `eza`, `fzf`, `gh`, `bat`
+- `nmap`, `ripgrep`, `fd`, `nvm`, `tmux`, `neovim`
+- `glow`, `zellij`, `starship`
+- VS Code, Homerow, Ghostty
 
-## 🐟 Fish Shell Features
+**Linux/Ubuntu (via apt + manual installs):**
+- `zsh`, `fzf`, `bat`, `ripgrep`, `fd-find`, `jq`
+- `tmux`, `gcc`, `build-essential`, `neovim`, `eza`
+- `zoxide`, `git-delta`, `glow`, `zellij`, `starship`
+- Oh My Zsh, nvm (with Node LTS)
 
-### Aliases
+## ⚡ Zsh Features
 
-- `zox` → `zoxide`
+### Aliases (both platforms)
+
+- `claude` → `claude --dangerously-skip-permissions`
+- `z`, `zox` → `zoxide` (smart directory jumping)
 - `ls` → `eza --icons`
+- `ll` → `eza -la --icons`
 - `cat` → `bat --style=plain`
+- `md` → `glow` (markdown viewer)
 
-### Key Bindings
+### Plugins
 
-- `Ctrl+R` - FZF history search
-- Vi mode enabled
+- **Oh My Zsh**: git, vi-mode, zoxide
+- **Starship**: Fast, customizable prompt
+- **Linux**: zsh-autosuggestions, zsh-syntax-highlighting
 
-### Functions
+### Auto-attach
 
-- `code` - Open current directory in VS Code
+- SSH sessions automatically attach to tmux/zellij
+- macOS: displays cheatsheet on login
 
 ## 📁 Directory Structure
 
 ```
 dotfiles/
-├── fish/                 # Fish shell configuration
-│   ├── config.fish      # Main configuration
-│   ├── functions/       # Custom functions
-│   └── completions/     # Auto-completions
+├── zsh/                 # Zsh shell configuration
+│   └── .zshrc          # Unified config (macOS + Linux)
 ├── nvim/                # Neovim configuration
 │   ├── init.lua         # Main config
 │   └── lua/             # Lua modules
+├── tmux/                # Tmux configuration
+│   └── tmux.conf       # Tmux settings
 ├── gh/                  # GitHub CLI config
-├── install.sh           # Installation script
-├── setup-fish-portable.fish  # Fish-specific setup
+├── zellij/              # Zellij config
+├── fish/                # Legacy Fish config
+├── install.sh           # macOS installation script
+├── linux-install.sh     # Linux installation script
+├── setup-github.sh      # GitHub setup helper
 └── README.md           # This file
 ```
 
@@ -89,27 +110,21 @@ dotfiles/
 # Pull latest changes
 git pull
 
-# Re-run install if needed
+# Re-run install if needed (macOS)
 ./install.sh
+
+# Or for Linux
+./linux-install.sh
 ```
-
-## 🎯 Manual Installation
-
-If you prefer to install manually:
-
-1. **Install Homebrew** (if not installed)
-2. **Install packages**: `brew install jq git-delta zoxide eza fzf gh bat`
-3. **Install Fisher**: `curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher`
-4. **Install fish plugins**: `fisher install jorgebucaran/autopair.fish PatrickF1/fzf.fish`
-5. **Symlink configs**: See `install.sh` for symlink commands
 
 ## 🌟 Features
 
-- ✅ **Cross-platform**: Works on both Intel and Apple Silicon Macs
+- ✅ **Cross-platform**: Works on macOS and Linux
 - ✅ **Automated setup**: One command installation
 - ✅ **Version controlled**: Track changes to your configs
 - ✅ **Modular**: Easy to customize and extend
 - ✅ **Documented**: Clear instructions and comments
+- ✅ **Zsh-based**: Unified shell experience across platforms
 
 ## 🤝 Contributing
 
@@ -118,12 +133,3 @@ Feel free to fork and customize for your own use! If you have improvements or su
 ## 📝 License
 
 MIT License - feel free to use however you'd like!
-
-## Planned improvements (headless AWS)
-
-- [ ] tmux auto-attach on SSH login + tmux.conf (vi keys, mouse, status bar)
-- [ ] mosh install for flaky connection tolerance
-- [ ] `~/.ssh/config` keep-alive (ServerAliveInterval) + host alias
-- [ ] starship prompt replacing hand-rolled vcs prompt
-- [ ] Project-specific shell aliases (cargo shortcuts, session nav)
-- [ ] Global `~/.gitconfig` wired into linux-install.sh
