@@ -113,6 +113,8 @@ packages=(
     "glow"
     "zellij"
     "starship"
+    "zsh-autosuggestions"
+    "zsh-syntax-highlighting"
 )
 
 echo "📦 Installing essential packages..."

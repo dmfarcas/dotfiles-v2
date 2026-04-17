@@ -82,8 +82,13 @@ else
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 fi
 
-# ===== Zsh plugins (installed via apt on Linux) =====
-if [[ "$IS_LINUX" == true ]]; then
+# ===== Zsh plugins =====
+if [[ "$IS_MACOS" == true ]]; then
+    # Homebrew zsh plugins on macOS
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null || true
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null || true
+elif [[ "$IS_LINUX" == true ]]; then
+    # System zsh plugins on Linux
     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null || true
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null || true
 fi
